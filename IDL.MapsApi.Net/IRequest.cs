@@ -3,5 +3,7 @@
     public interface IRequest<T>
     {
         string Path { get; }
+
+        string RootPath { get; }
     }
 }

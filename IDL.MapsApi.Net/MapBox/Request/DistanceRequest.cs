@@ -10,5 +10,7 @@ namespace IDL.MapsApi.Net.MapBox.Request
         {
             get { return string.Format("distances/v1/mapbox/{0}", Profile); }
         }
+
+        public string RootPath { get; private set; }
     }
 }

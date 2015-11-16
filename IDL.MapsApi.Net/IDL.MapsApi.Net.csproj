@@ -47,11 +47,7 @@
   <ItemGroup>
     <Compile Include="ApiRequest.cs" />
     <Compile Include="Client\ApiClient.cs" />
-    <Compile Include="Client\GoogleClient.cs" />
     <Compile Include="Client\IApiClient.cs" />
-    <Compile Include="Client\IGoogleApiClient.cs" />
-    <Compile Include="Client\MapBoxClient.cs" />
-    <Compile Include="Client\IMapBoxApiClient.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Google\Models\AddressComponent.cs" />
     <Compile Include="Google\Models\Bounds.cs" />
@@ -63,8 +59,7 @@
     <Compile Include="Google\Request\GoogleForwardGeocodingRequest.cs" />
     <Compile Include="Google\Response\GoogleGeocodingResponse.cs" />
     <Compile Include="IRequest.cs" />
-    <Compile Include="GoogleGeoLocationProvider.cs" />
-    <Compile Include="MapBoxGeoLocationProvider.cs" />
+    <Compile Include="GeoLocationProvider.cs" />
     <Compile Include="IGeoLocationProvider.cs" />
     <Compile Include="MapBox\Models\BBox.cs" />
     <Compile Include="MapBox\Models\CarmenGeoJsonBase.cs" />

@@ -1,17 +1,23 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization.Json;
 using System.Threading.Tasks;
 
 namespace IDL.MapsApi.Net.Client
 {
-    public abstract class ApiClient : IApiClient
+    public class ApiClient : IApiClient
     {
-        protected string _endPoint;
+        private readonly string _endPoint;
 
         private HttpClient _client;
 
         private HttpMessageHandler _responseHandler;
+
+        public ApiClient(string rootPath = null)
+        {
+            _endPoint = rootPath;
+        }
 
         public HttpMessageHandler ResponseHandler
         {
@@ -21,7 +27,13 @@ namespace IDL.MapsApi.Net.Client
 
         public async Task<TResponse> GetAsync<TResponse>(IRequest<TResponse> request) where TResponse : class, new()
         {
-            var path = _endPoint + (_endPoint.EndsWith("/") ? string.Empty : "/") + request.Path;
+            var root = _endPoint ?? request.RootPath;
+            if (string.IsNullOrEmpty(root))
+            {
+                throw new NullReferenceException(string.Format("No root parameter was supplied for request {0}", request.GetType().Name));
+            }
+
+            var path = root + (root.EndsWith("/") ? string.Empty : "/") + request.Path;
 
             TResponse response = null;
             using (var handler = _responseHandler ?? new HttpClientHandler())
