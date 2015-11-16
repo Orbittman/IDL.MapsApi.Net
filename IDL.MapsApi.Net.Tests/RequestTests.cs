@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -56,6 +57,21 @@ namespace IDL.MapsApi.Net.Tests
         }
 
         [Test]
+        public void CheckThatTheClientThowsAnExceptionWhenNoRootPathIsSupplied()
+        {
+            var key = Guid.NewGuid().ToString();
+            var request = new GoogleForwardGeocodingRequest(key)
+            {
+                Query = "BS5 6DR",
+                RootPath = string.Empty
+            };
+
+            var exception = Assert.Throws<AggregateException>(() => { var bob = new ApiClient().GetAsync(request).Result; });
+            Assert.That(exception.InnerExceptions.Count, Is.EqualTo(1));
+            Assert.That(exception.InnerExceptions.First().GetType(), Is.EqualTo(typeof(NullReferenceException)));
+        }
+
+        [Test]
         public async void CheckThatTheApiClientCorrectlySerialisesAGoogleForwardGeoCodingResponse()
         {
             var key = Guid.NewGuid().ToString();
@@ -64,7 +80,7 @@ namespace IDL.MapsApi.Net.Tests
                 Query = "BS5 6DR"
             };
 
-            var apiResponse = await GetResponse(new GoogleClient(), request, GetForwardGeocodingGoogleResult());
+            var apiResponse = await GetResponse(new ApiClient(), request, GetForwardGeocodingGoogleResult());
 
             Assert.That(request.Path, Is.StringContaining(string.Format("key={0}",key)));
             Assert.That(apiResponse, Is.Not.Null);
@@ -82,7 +98,7 @@ namespace IDL.MapsApi.Net.Tests
                 Longitude = 0
             };
 
-            var apiResponse = await GetResponse(new GoogleClient(), request, GetReverseGeocodingGoogleResult());
+            var apiResponse = await GetResponse(new ApiClient(), request, GetReverseGeocodingGoogleResult());
 
             Assert.That(request.Path, Is.StringContaining(string.Format("key={0}", key)));
             Assert.That(apiResponse, Is.Not.Null);
@@ -100,7 +116,7 @@ namespace IDL.MapsApi.Net.Tests
                 Types = new[] { Types.postcode }
             };
 
-            var apiResponse = Task.Run(() => GetResponse(new MapBoxClient(), request, GetForwardGeoCodingMapBoxResponseResult())).Result;
+            var apiResponse = Task.Run(() => GetResponse(new ApiClient(), request, GetForwardGeoCodingMapBoxResponseResult())).Result;
 
             Assert.That(request.Path, Is.StringContaining(string.Format("access_token={0}", key)));
             Assert.That(apiResponse, Is.Not.Null);
@@ -118,7 +134,7 @@ namespace IDL.MapsApi.Net.Tests
                 Longitude = 0
             };
 
-            var apiResponse = await GetResponse(new MapBoxClient(), request, GetReversGeoCodingMapBoxResponseResult());
+            var apiResponse = await GetResponse(new ApiClient(), request, GetReversGeoCodingMapBoxResponseResult());
 
             Assert.That(request.Path, Is.StringContaining(string.Format("access_token={0}", key)));
             Assert.That(apiResponse, Is.Not.Null);
@@ -129,9 +145,9 @@ namespace IDL.MapsApi.Net.Tests
         [Test]
         public void CheckThatTheForwardGeoCodingRequestReturnsValidResults()
         {
-            var client = Substitute.For<IMapBoxApiClient>();
+            var client = Substitute.For<IApiClient>();
 
-            var provider = new MapBoxGeoLocationProvider(client);
+            var provider = new GeoLocationProvider(client);
             var request = new MapBoxForwardGeocodingRequest
             {
                 Query = "BS5 6DR",
@@ -148,9 +164,9 @@ namespace IDL.MapsApi.Net.Tests
         [Test]
         public async void CheckThatTheReverseGeoCodingRequestReturnsValidResults()
         {
-            var client = Substitute.For<IMapBoxApiClient>();
+            var client = Substitute.For<IApiClient>();
 
-            var provider = new MapBoxGeoLocationProvider(client);
+            var provider = new GeoLocationProvider(client);
             var request = new MapBoxReverseGeocodingRequest
             {
                 Latitude = 51.4500,

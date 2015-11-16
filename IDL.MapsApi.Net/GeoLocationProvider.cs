@@ -4,13 +4,13 @@ using IDL.MapsApi.Net.Client;
 
 namespace IDL.MapsApi.Net
 {
-    public class MapBoxGeoLocationProvider : IGeoLocationProvider
+    public class GeoLocationProvider : IGeoLocationProvider
     {
-        private readonly IMapBoxApiClient _client;
+        private readonly IApiClient _client;
 
-        public MapBoxGeoLocationProvider(IMapBoxApiClient client = null)
+        public GeoLocationProvider(IApiClient client = null)
         {
-            _client = client ?? new MapBoxClient();
+            _client = client ?? new ApiClient();
         }
 
         public Task<TResponse> GetAsync<TResponse>(IRequest<TResponse> request)
