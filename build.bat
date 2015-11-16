@@ -16,7 +16,7 @@ REM Build
 if not "%errorlevel%"=="0" goto failure
 
 REM Unit tests
-%GallioEcho% IDL.MapsApi.Net.Tests\bin\%config%\IDL.MapsApi.Net.Tests.dll
+"%GallioEcho%" IDL.MapsApi.Net.Tests\bin\%config%\IDL.MapsApi.Net.Tests.dll
 if not "%errorlevel%"=="0" goto failure
 
 REM Package
