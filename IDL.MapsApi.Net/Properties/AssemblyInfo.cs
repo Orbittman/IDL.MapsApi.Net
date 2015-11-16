@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Invitation Digital Ltd.")]
-[assembly: AssemblyProduct("MapBox.Net")]
+[assembly: AssemblyProduct("IDL.MapsApi.Net")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
