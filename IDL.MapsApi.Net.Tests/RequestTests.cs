@@ -56,7 +56,7 @@ namespace IDL.MapsApi.Net.Tests
         }
 
         [Test]
-        public async Task CheckThatTheApiClientCorrectlySerialisesAGoogleForwardGeoCodingResponse()
+        public async void CheckThatTheApiClientCorrectlySerialisesAGoogleForwardGeoCodingResponse()
         {
             var key = Guid.NewGuid().ToString();
             var request = new GoogleForwardGeocodingRequest(key)
@@ -73,7 +73,7 @@ namespace IDL.MapsApi.Net.Tests
         }
 
         [Test]
-        public async Task CheckThatTheApiClientCorrectlySerialisesAGoogleReverseGeoCodingResponse()
+        public async void CheckThatTheApiClientCorrectlySerialisesAGoogleReverseGeoCodingResponse()
         {
             var key = Guid.NewGuid().ToString();
             var request = new GoogleReverseGeocodingRequest(key)
@@ -109,7 +109,7 @@ namespace IDL.MapsApi.Net.Tests
         }
 
         [Test]
-        public async Task CheckThatTheApiClientCorrectlySerialisesAMapBoxReversGeoCodingResponse()
+        public async void CheckThatTheApiClientCorrectlySerialisesAMapBoxReversGeoCodingResponse()
         {
             var key = Guid.NewGuid().ToString();
             var request = new MapBoxReverseGeocodingRequest(key)
@@ -146,7 +146,7 @@ namespace IDL.MapsApi.Net.Tests
         }
 
         [Test]
-        public async Task CheckThatTheReverseGeoCodingRequestReturnsValidResults()
+        public async void CheckThatTheReverseGeoCodingRequestReturnsValidResults()
         {
             var client = Substitute.For<IMapBoxApiClient>();
 
