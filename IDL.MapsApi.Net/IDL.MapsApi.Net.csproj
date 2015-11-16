@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B809CAD6-B8F7-4DD6-824B-2F4A00A50B90}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IDL.MapsApi.Net</RootNamespace>
+    <AssemblyName>IDL.MapsApi.Net</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiRequest.cs" />
+    <Compile Include="Client\ApiClient.cs" />
+    <Compile Include="Client\GoogleClient.cs" />
+    <Compile Include="Client\IApiClient.cs" />
+    <Compile Include="Client\IGoogleApiClient.cs" />
+    <Compile Include="Client\MapBoxClient.cs" />
+    <Compile Include="Client\IMapBoxApiClient.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Google\Models\AddressComponent.cs" />
+    <Compile Include="Google\Models\Bounds.cs" />
+    <Compile Include="Google\Models\Geometry.cs" />
+    <Compile Include="Google\Models\GoogleGeoCodingResult.cs" />
+    <Compile Include="Google\Models\Location.cs" />
+    <Compile Include="Google\Request\GoogleGeoLocationRequest.cs" />
+    <Compile Include="Google\Request\GoogleReverseGeocodingRequest.cs" />
+    <Compile Include="Google\Request\GoogleForwardGeocodingRequest.cs" />
+    <Compile Include="Google\Response\GoogleGeocodingResponse.cs" />
+    <Compile Include="IRequest.cs" />
+    <Compile Include="GoogleGeoLocationProvider.cs" />
+    <Compile Include="MapBoxGeoLocationProvider.cs" />
+    <Compile Include="IGeoLocationProvider.cs" />
+    <Compile Include="MapBox\Models\BBox.cs" />
+    <Compile Include="MapBox\Models\CarmenGeoJsonBase.cs" />
+    <Compile Include="MapBox\Models\Context.cs" />
+    <Compile Include="MapBox\Models\Feature.cs" />
+    <Compile Include="MapBox\Models\Geometery.cs" />
+    <Compile Include="MapBox\Models\GeometryType.cs" />
+    <Compile Include="MapBox\Models\Point.cs" />
+    <Compile Include="MapBox\Request\DistanceProfile.cs" />
+    <Compile Include="MapBox\Request\DistanceRequest.cs" />
+    <Compile Include="MapBox\Request\MapBoxForwardGeocodingRequest.cs" />
+    <Compile Include="MapBox\Request\MapBoxGeoLocationRequest.cs" />
+    <Compile Include="MapBox\Request\MapBoxReverseGeocodingRequest.cs" />
+    <Compile Include="MapBox\Request\PlacesRequest.cs" />
+    <Compile Include="MapBox\Request\Types.cs" />
+    <Compile Include="MapBox\Response\DistanceResponse.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MapBox\Response\MapBoxGeocodingResponse.cs" />
+    <Compile Include="Models\Address.cs" />
+    <Compile Include="Models\BoundingBox.cs" />
+    <Compile Include="Models\ForwardGeocodingResult.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Result.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
