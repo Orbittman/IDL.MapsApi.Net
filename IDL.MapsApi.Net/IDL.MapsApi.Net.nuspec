@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>IDL.MapsApi.Net</id>
+        <version>0.3.0</version>
+        <authors>Tim Barton</authors>
+        <licenseUrl>http://www.gnu.org/licenses/gpl-2.0.txt</licenseUrl>
+        <projectUrl>https://github.com/InvitationDigital/IDL.MapsApi.Net</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>.Net library for integrating with Google Maps and MapBox  forward and reverse geolocation services.</description>
+        <summary />
+        <releaseNotes>Removed the reference to RestSharp</releaseNotes>
+        <tags>Google maps, MapBox, Maps, Map, GoogleMaps, Geolocation</tags>
+    </metadata>
+    <files>
+        <file src="bin\release\IDL.MapsApi.Net.dll" target="lib\Net45\IDL.MapsApi.Net.dll" />
+    </files>
+</package>
