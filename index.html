@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Idl.mapsapi.net by InvitationDigital</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Idl.mapsapi.net</h1>
+          <h2></h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/InvitationDigital/IDL.MapsApi.Net/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/InvitationDigital/IDL.MapsApi.Net/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/InvitationDigital/IDL.MapsApi.Net" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p><a href="https://www.myget.org/"><img src="https://www.myget.org/BuildSource/Badge/idl-public?identifier=95c60c91-9607-478d-b51a-679426498ab6" alt="idl-public MyGet Build Status"></a></p>
+
+<h1>
+<a id="idlmapsapinet" class="anchor" href="#idlmapsapinet" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>IDL.MapsApi.Net</h1>
+
+<p>This is a .Net library for accessing the Google Maps and MapBox geolocation APIs. At the moment there is only support for the forward lookup where you get a lat/long from a location string and reverse where you get an address from a lat/long. 
+The library is based on simple requests to the MapsApi client for the service that you requre:</p>
+
+<div class="highlight highlight-source-cs"><pre>IApiClient client = <span class="pl-k">new</span> <span class="pl-k">new</span> ApiClient();
+<span class="pl-k">var</span> request = <span class="pl-k">new</span> GoogleForwardGeocodingRequest(key)
+    {
+        Query = <span class="pl-s"><span class="pl-pds">"</span>BS13RW<span class="pl-pds">"</span></span>
+    };
+<span class="pl-k">var</span> response = client.GetAsync(request);</pre></div>
+
+<p>Each request has a sepcific response that represents the data that the provider supplies, Google Maps and MapBox both return different data for the same type of request. MapsApi contains extension methods that convert these into a common format with a basic generic fields for what is required.</p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> response = client.GetAsync(request).Result.AsMapsApiGeocodingResult();</pre></div>
+
+<p>This returns a collection of Result objects.</p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Result</span>
+    {
+        <span class="pl-k">public</span> Address <span class="pl-en">Address</span> { <span class="pl-k">get</span>; <span class="pl-k">internal</span> <span class="pl-k">set</span>; }
+
+        <span class="pl-k">public</span> BoundingBox <span class="pl-en">Boundry</span> { <span class="pl-k">get</span>; <span class="pl-k">internal</span> <span class="pl-k">set</span>; }
+
+        <span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-en">Id</span> { <span class="pl-k">get</span>; <span class="pl-k">internal</span> <span class="pl-k">set</span>; }
+
+        <span class="pl-k">public</span> Location <span class="pl-en">Location</span> { <span class="pl-k">get</span>; <span class="pl-k">internal</span> <span class="pl-k">set</span>; }
+    }</pre></div>
+
+<p>By default the path and API keys are picked up from the AppSettings configuration section with the following keys:</p>
+
+<ul>
+<li>MapBoxApiKey</li>
+<li>MapBoxGeoApiEndPoint</li>
+<li>GoogleMapsApiKey</li>
+<li>GoogleMapsGeoApiEndPoint</li>
+</ul>
+
+<p>This can be overridden by passing the root path to the ApiClient constructor or setting the RootPath of a request and passing in the api key to the request constructor. This is because from expreience the path formats can be different when using different requests to the same provider.</p>
+
+<p>If you would rather use a different client that the built in one you can create a wrapper for libraries such as RestSharp.</p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">RestSharpClientWrapper</span> : <span class="pl-k">ApiClient</span>
+  {
+      <span class="pl-k">private</span> <span class="pl-k">readonly</span> IRestClient _client;
+
+      <span class="pl-k">public</span> <span class="pl-en">RestSharpClientWrapper</span>(<span class="pl-k">IRestClient</span> <span class="pl-smi">client</span> <span class="pl-k">=</span> <span class="pl-c1">null</span>)
+      {
+          _client = client ?? <span class="pl-k">new</span> RestClient();
+          _client.ClearHandlers();
+          _client.AddHandler(<span class="pl-s"><span class="pl-pds">"</span>application/vnd.geo+json<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> JsonDeserializer());
+      }
+
+      <span class="pl-k">public</span> <span class="pl-k">override</span> Task&lt;TResponse&gt; GetAsync&lt;TResponse&gt;(IRequest&lt;TResponse&gt; request)
+      {
+          _client.BaseUrl = <span class="pl-k">new</span> Uri(request.RootPath);
+          <span class="pl-k">var</span> response = _client.GetTaskAsync&lt;TResponse&gt;(<span class="pl-k">new</span> RestRequest(request.Path) { RequestFormat = DataFormat.Json });
+          <span class="pl-k">return</span> response;
+      }
+  }</pre></div>
+        </section>
+
+        <footer>
+          Idl.mapsapi.net is maintained by <a href="https://github.com/InvitationDigital">InvitationDigital</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
