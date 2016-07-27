@@ -1,4 +1,4 @@
-[![idl-public MyGet Build Status](https://www.myget.org/BuildSource/Badge/idl-public?identifier=d92a24c8-0d80-4579-958d-1035ab52a28f)](https://www.myget.org/)
+[![idl-public MyGet Build Status](https://www.myget.org/BuildSource/Badge/idl-public?identifier=95c60c91-9607-478d-b51a-679426498ab6)](https://www.myget.org/)
 # IDL.MapsApi.Net
 
 This is a .Net library for accessing the Google Maps and MapBox geolocation APIs. At the moment there is only support for the forward lookup where you get a lat/long from a location string and reverse where you get an address from a lat/long. 
