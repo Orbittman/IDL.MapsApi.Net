@@ -16,7 +16,8 @@ call "%msbuild%" IDL.MapsApi.Net.sln /p:Configuration="%config%" /m /v:M /fl /fl
 if not "%errorlevel%"=="0" goto failure
 
 REM Unit tests
-"%GallioEcho%" IDL.MapsApi.Net.Tests\bin\%config%\IDL.MapsApi.Net.Tests.dll
+call %nuget% install NUnit.Runners -Version 2.6.4 -OutputDirectory packages
+packages\NUnit.Runners.2.6.4\tools\nunit-console.exe /config:%config% /framework:net-4.5 IDL.MapsApi.Net.Tests\bin\%config%\IDL.MapsApi.Net.Tests.dll
 if not "%errorlevel%"=="0" goto failure
 
 REM Package
