@@ -12,7 +12,7 @@ REM Package restore
 call %NuGet% restore IDL.MapsApi.Net.Tests\packages.config -OutputDirectory %cd%\packages -NonInteractive
 
 REM Build
-%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild IDL.MapsApi.Net.sln /p:Configuration="%config%" /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=Normal /nr:false
+call %msbuild% IDL.MapsApi.Net.sln /p:Configuration="%config%" /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=Normal /nr:false
 if not "%errorlevel%"=="0" goto failure
 
 REM Unit tests
