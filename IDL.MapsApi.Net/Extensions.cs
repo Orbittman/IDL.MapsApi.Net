@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using IDL.MapsApi.Net.Google.Models;
@@ -101,42 +100,45 @@ namespace IDL.MapsApi.Net
             return response;
         }
 
-        public static Location[] ToLocationPoints(this string polyLine)
+        public static IEnumerable<Location> ToLocationPoints(this string polyLine)
         {
             var binary = 0;
             var shiftCounter = 0;
             var locations = new List<Location>();
-            var iteration = 0;
+            var state = true;
             var currentLatitude = 0d;
             var currentLongitude = 0d;
+            var index = 0;
+            var charArray = polyLine.ToCharArray();
 
-            foreach (var characterValue in polyLine.Select(t => t - 63))
+            while (index < charArray.Length)
             {
-                var shift = shiftCounter++ * 5;
-                if ((characterValue & 0x20) == 0x20)
+                var character = charArray[index++] - 63;
+                if ((character & 32) == 32)
                 {
-                    binary |= (characterValue & ~0x20) << shift;
+                    binary |= (character & ~32) << shiftCounter++ * 5;
                 }
                 else
                 {
-                    binary |= characterValue << shift;
-                    var value = Convert.ToDouble(((binary & 1) == 1 ? ~binary : binary) >> 1) / 1E5;
-                    if (iteration++ % 2 == 0)
+                    binary |= character << shiftCounter++ * 5;
+                    binary = ((binary & 1) == 1 ? ~binary : binary) >> 1;
+                    if (state)
                     {
-                        currentLatitude += value;
+                        currentLatitude += binary;
                     }
                     else
                     {
-                        currentLongitude += value;
-                        locations.Add(new Location { Latitude = currentLatitude, Longitude = currentLongitude });
+                        currentLongitude += binary;
+                        locations.Add(new Location { Latitude = currentLatitude / 1E5, Longitude = currentLongitude / 1E5 });
                     }
 
+                    state = !state;
                     binary = 0;
                     shiftCounter = 0;
                 }
             }
 
-            return locations.ToArray();
+            return locations;
         }
 
         private static string GetGoogleAddressComponent(IEnumerable<AddressComponent> addressComponents, string componentName)
