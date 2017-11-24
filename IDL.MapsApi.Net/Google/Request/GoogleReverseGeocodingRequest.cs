@@ -5,37 +5,24 @@ namespace IDL.MapsApi.Net.Google.Request
 {
     public class GoogleReverseGeocodingRequest : GoogleGeoLocationRequest, IRequest<GoogleGeocodingResponse>
     {
-        private double _latitude;
-        private double _longitude;
+        public GoogleReverseGeocodingRequest(string apiKey = null)
+            : base(apiKey)
+        {
+        }
 
         public GoogleReverseGeocodingRequest(GoogleCredentials credentials = null)
             : base(credentials)
         {
         }
 
-        public GoogleReverseGeocodingRequest(string apiKey = null)
-            : base(apiKey)
-        {
-        }
+        public double Latitude { get; set; }
 
-        public double Latitude
-        {
-            get => _latitude;
-            set
-            {
-                _latitude = value;
-                QueryParameters["latlng"] = $"{value},{_longitude}";
-            }
-        }
+        public double Longitude { get; set; }
 
-        public double Longitude
+        protected override void BuildQueryParameters()
         {
-            get => _longitude;
-            set
-            {
-                _longitude = value;
-                QueryParameters["latlng"] = $"{_latitude},{value}";
-            }
+            AddQueryParameter("latlng", $"{Latitude},{Longitude}");
+            base.BuildQueryParameters();
         }
     }
 }

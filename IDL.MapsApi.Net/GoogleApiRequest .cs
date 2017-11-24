@@ -1,36 +1,38 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Configuration;
 
 using IDL.MapsApi.Net.Google.Models;
-using IDL.MapsApi.Net.Google.Request;
 
 namespace IDL.MapsApi.Net
 {
     public abstract class GoogleApiRequest : ApiRequest
     {
+        private readonly GoogleCredentials _credentials;
+
         protected GoogleApiRequest(string apiKey = null)
+            : this(new GoogleCredentials(apiKey))
         {
-            QueryParameters = new NameValueCollection { { "key", apiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey") } };
         }
 
         protected GoogleApiRequest(GoogleCredentials credentials)
         {
-            var clientId = credentials?.ClientId ?? ConfigurationManager.AppSettings.Get("GoogleMapsClientId");
-            var signature = credentials?.Signature ?? ConfigurationManager.AppSettings.Get("GoogleMapsSignature");
-            var apiKey = credentials?.ApiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey");
+            _credentials = credentials;
+        }
+
+        protected override void BuildQueryParameters()
+        {
+            var clientId = _credentials?.ClientId ?? ConfigurationManager.AppSettings.Get("GoogleMapsClientId");
+            var signature = _credentials?.Signature ?? ConfigurationManager.AppSettings.Get("GoogleMapsSignature");
+            var apiKey = _credentials?.ApiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey");
 
             if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(signature))
             {
-                QueryParameters = new NameValueCollection
-                {
-                    { "client", clientId },
-                    { "signature", signature }
-                };
+                AddQueryParameter("client", clientId);
+                AddQueryParameter("signature", signature);
             }
             else if (!string.IsNullOrEmpty(apiKey))
             {
-                QueryParameters = new NameValueCollection { { "key", apiKey } };
+                AddQueryParameter("key", apiKey);
             }
             else
             {

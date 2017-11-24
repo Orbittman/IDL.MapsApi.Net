@@ -13,9 +13,8 @@ namespace IDL.MapsApi.Net.MapBox.Request
 
         public string RootPath
         {
-            get { return _rootPath ?? ConfigurationManager.AppSettings.Get("MapBoxGeoApiEndPoint"); }
-
-            set { _rootPath = value; }
+            get => _rootPath ?? ConfigurationManager.AppSettings.Get("MapBoxGeoApiEndPoint");
+            set => _rootPath = value;
         }
     }
 }

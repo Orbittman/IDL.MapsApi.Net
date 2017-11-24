@@ -7,8 +7,6 @@ namespace IDL.MapsApi.Net.Google.Request
 {
     public class GoogleDirectionsRequest : GoogleApiRequest, IRequest<GoogleDirectionsResponse>
     {
-        private string _destination;
-        private string _origin;
         private string _rootPath;
 
         public GoogleDirectionsRequest(string apiKey = null)
@@ -16,38 +14,28 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
-        protected GoogleDirectionsRequest(GoogleCredentials credentials)
+        public GoogleDirectionsRequest(GoogleCredentials credentials)
             : base(credentials)
         {
         }
 
         protected override string RequestSpecificPath => "directions/json";
 
-        public string Origin
-        {
-            get => _origin;
-            set
-            {
-                QueryParameters["origin"] = $"{value}{_origin}";
-                _origin = value;
-            }
-        }
+        public string Origin { get; set; }
 
-        public string Destination
-        {
-            get => _destination;
-            set
-            {
-                QueryParameters["destination"] = $"{value}{_destination}";
-                _destination = value;
-            }
-        }
+        public string Destination { get; set; }
 
         public string RootPath
         {
             get => _rootPath ?? ConfigurationManager.AppSettings.Get("GoogleMapsGeoApiEndPoint");
-
             set => _rootPath = value;
+        }
+
+        protected override void BuildQueryParameters()
+        {
+            AddQueryParameter("destination", Destination);
+            AddQueryParameter("origin", Origin);
+            base.BuildQueryParameters();
         }
     }
 }

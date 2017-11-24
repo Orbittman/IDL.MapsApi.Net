@@ -15,11 +15,12 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
-        public string Query
-        {
-            get => QueryParameters["address"];
+        public string Address { get; set; }
 
-            set => QueryParameters["address"] = value;
+        protected override void BuildQueryParameters()
+        {
+            AddQueryParameter("address", Address);
+            base.BuildQueryParameters();
         }
     }
 }
