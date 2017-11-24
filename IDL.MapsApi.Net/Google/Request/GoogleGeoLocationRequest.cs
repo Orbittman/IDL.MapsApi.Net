@@ -1,5 +1,7 @@
 ﻿using System.Configuration;
 
+using IDL.MapsApi.Net.Google.Models;
+
 namespace IDL.MapsApi.Net.Google.Request
 {
     public abstract class GoogleGeoLocationRequest : GoogleApiRequest
@@ -11,13 +13,17 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
+        protected GoogleGeoLocationRequest(GoogleCredentials credentials)
+            : base(credentials)
+        {
+        }
+
         protected override string RequestSpecificPath => "geocode/json";
 
         public string RootPath
         {
-            get { return _rootPath ?? ConfigurationManager.AppSettings.Get("GoogleMapsGeoApiEndPoint"); }
-
-            set { _rootPath = value; }
+            get => _rootPath ?? ConfigurationManager.AppSettings.Get("GoogleMapsGeoApiEndPoint");
+            set => _rootPath = value;
         }
     }
 }

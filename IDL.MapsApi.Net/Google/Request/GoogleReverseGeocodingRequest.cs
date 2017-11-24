@@ -1,4 +1,5 @@
-﻿using IDL.MapsApi.Net.Google.Response;
+﻿using IDL.MapsApi.Net.Google.Models;
+using IDL.MapsApi.Net.Google.Response;
 
 namespace IDL.MapsApi.Net.Google.Request
 {
@@ -7,6 +8,11 @@ namespace IDL.MapsApi.Net.Google.Request
         private double _latitude;
         private double _longitude;
 
+        public GoogleReverseGeocodingRequest(GoogleCredentials credentials = null)
+            : base(credentials)
+        {
+        }
+
         public GoogleReverseGeocodingRequest(string apiKey = null)
             : base(apiKey)
         {
@@ -14,7 +20,7 @@ namespace IDL.MapsApi.Net.Google.Request
 
         public double Latitude
         {
-            get { return _latitude; }
+            get => _latitude;
             set
             {
                 _latitude = value;
@@ -24,7 +30,7 @@ namespace IDL.MapsApi.Net.Google.Request
 
         public double Longitude
         {
-            get { return _longitude; }
+            get => _longitude;
             set
             {
                 _longitude = value;

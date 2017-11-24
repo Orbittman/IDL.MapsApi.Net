@@ -1,6 +1,9 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Configuration;
-using System.Linq;
+
+using IDL.MapsApi.Net.Google.Models;
+using IDL.MapsApi.Net.Google.Request;
 
 namespace IDL.MapsApi.Net
 {
@@ -11,21 +14,28 @@ namespace IDL.MapsApi.Net
             QueryParameters = new NameValueCollection { { "key", apiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey") } };
         }
 
-        protected NameValueCollection QueryParameters { get; set; }
-
-        public string Path
+        protected GoogleApiRequest(GoogleCredentials credentials)
         {
-            get
+            var clientId = credentials?.ClientId ?? ConfigurationManager.AppSettings.Get("GoogleMapsClientId");
+            var signature = credentials?.Signature ?? ConfigurationManager.AppSettings.Get("GoogleMapsSignature");
+            var apiKey = credentials?.ApiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey");
+
+            if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(signature))
             {
-                var parameters = QueryParameters.AllKeys.Select(q => q + "=" + QueryParameters[q]);
-                return RequestSpecificPath + "?" + string.Join("&", parameters);
+                QueryParameters = new NameValueCollection
+                {
+                    { "client", clientId },
+                    { "signature", signature }
+                };
             }
-        }
-
-        protected virtual string RequestSpecificPath => string.Empty;
-
-        protected virtual void ConfigureParameters()
-        {
+            else if (!string.IsNullOrEmpty(apiKey))
+            {
+                QueryParameters = new NameValueCollection { { "key", apiKey } };
+            }
+            else
+            {
+                throw new ArgumentException("You must specify a client id and signature or an api key");
+            }
         }
     }
 }

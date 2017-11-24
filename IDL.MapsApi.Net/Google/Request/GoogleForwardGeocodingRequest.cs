@@ -1,4 +1,5 @@
-﻿using IDL.MapsApi.Net.Google.Response;
+﻿using IDL.MapsApi.Net.Google.Models;
+using IDL.MapsApi.Net.Google.Response;
 
 namespace IDL.MapsApi.Net.Google.Request
 {
@@ -9,11 +10,16 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
+        public GoogleForwardGeocodingRequest(GoogleCredentials credentials = null)
+            : base(credentials)
+        {
+        }
+
         public string Query
         {
-            get { return QueryParameters["address"]; }
+            get => QueryParameters["address"];
 
-            set { QueryParameters["address"] = value; }
+            set => QueryParameters["address"] = value;
         }
     }
 }
