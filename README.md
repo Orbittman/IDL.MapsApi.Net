@@ -43,7 +43,7 @@ By default the path and API keys are picked up from the AppSettings configuratio
 - GoogleMapsApiKey
 - GoogleMapsGeoApiEndPoint
 
-This can be overridden by passing the root path to the ApiClient constructor or setting the RootPath of a request and passing in the api key or in the case of hte Google requests a GoogleCredentials class to the request constructor. This is because from expreience the path formats can be different when using different requests to the same provider.
+This can be overridden by passing the root path to the ApiClient constructor or setting the RootPath of a request and passing in the api key or in the case of the Google requests a GoogleCredentials class to the request constructor. This is because from expreience the path formats can be different when using different requests to the same provider.
 
 If you would rather use a different client than the built in one you can create a wrapper for libraries such as RestSharp.
 ````c#
