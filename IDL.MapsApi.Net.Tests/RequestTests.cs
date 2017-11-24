@@ -80,9 +80,9 @@ namespace IDL.MapsApi.Net.Tests
             Assert.That(apiResponse.Routes.Length, Is.EqualTo(1));
 
             Assert.That(apiResponse.Routes[0].PolyLine.Points, Is.Not.Empty);
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.Length, Is.EqualTo(1));
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations[0].Latitude, Is.EqualTo(40.74288));
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations[0].Longitude, Is.EqualTo(-74.00585));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.Count(), Is.EqualTo(1));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.ElementAt(0).Latitude, Is.EqualTo(40.74288));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.ElementAt(0).Longitude, Is.EqualTo(-74.00585));
 
             Assert.That(apiResponse.Routes[0].Bounds.NorthEast.Latitude, Is.EqualTo(40.8171321));
             Assert.That(apiResponse.Routes[0].Bounds.NorthEast.Longitude, Is.EqualTo(-73.99449150000001));

@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+
+using FluentAssertions;
 
 using IDL.MapsApi.Net.Models;
 
@@ -22,10 +24,10 @@ namespace IDL.MapsApi.Net.Tests
             const string polyLine = "_p~iF~ps|U_ulLnnqC_mqNvxq`@";
             var locations = polyLine.ToLocationPoints();
 
-            locations.Length.Should().Be(3);
+            locations.Count().Should().Be(3);
             for (var i = 0; i < expected.Length; i++)
             {
-                locations[i].ShouldBeEquivalentTo(expected[i]);
+                locations.ElementAt(i).ShouldBeEquivalentTo(expected[i]);
             }
         }
     }

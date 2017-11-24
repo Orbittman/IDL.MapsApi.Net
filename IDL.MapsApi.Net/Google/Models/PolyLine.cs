@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace IDL.MapsApi.Net.Google.Models
 {
@@ -8,6 +9,6 @@ namespace IDL.MapsApi.Net.Google.Models
         [DataMember(Name = "points")]
         public string Points { get; set; }
 
-        public Net.Models.Location[] StepLocations => Points.ToLocationPoints();
+        public IEnumerable<Net.Models.Location> StepLocations => Points.ToLocationPoints();
     }
 }
