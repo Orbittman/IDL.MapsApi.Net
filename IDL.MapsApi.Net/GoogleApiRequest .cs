@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Configuration;
+using System.Security.Cryptography;
+using System.Text;
 
 using IDL.MapsApi.Net.Google.Models;
 
@@ -22,13 +24,11 @@ namespace IDL.MapsApi.Net
         protected override void BuildQueryParameters()
         {
             var clientId = _credentials?.ClientId ?? ConfigurationManager.AppSettings.Get("GoogleMapsClientId");
-            var signature = _credentials?.Signature ?? ConfigurationManager.AppSettings.Get("GoogleMapsSignature");
             var apiKey = _credentials?.ApiKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsApiKey");
 
-            if (!string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(signature))
+            if (!string.IsNullOrEmpty(clientId))
             {
                 AddQueryParameter("client", clientId);
-                AddQueryParameter("signature", signature);
             }
             else if (!string.IsNullOrEmpty(apiKey))
             {
@@ -36,8 +36,31 @@ namespace IDL.MapsApi.Net
             }
             else
             {
-                throw new ArgumentException("You must specify a client id and signature or an api key");
+                throw new ArgumentException("You must specify a client id or an api key");
             }
+        }
+
+        public override string Path
+        {
+            get
+            {
+                var secretKey = _credentials?.SecretKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsSecretKey");
+                var path = string.IsNullOrEmpty(secretKey) ? base.Path : SignPath(base.Path, secretKey);
+                return path;
+            }
+        }
+
+        public static string SignPath(string url, string keyString)
+        {
+            var usablePrivateKey = keyString.Replace("-", "+").Replace("_", "/");
+            var privateKeyBytes = Convert.FromBase64String(usablePrivateKey);
+            var uri = new Uri(url, UriKind.Relative);
+            var encodedPathAndQueryBytes = new ASCIIEncoding().GetBytes(uri.OriginalString);
+            var algorithm = new HMACSHA1(privateKeyBytes);
+            var hash = algorithm.ComputeHash(encodedPathAndQueryBytes);
+            var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
+            
+            return uri.OriginalString + "&signature=" + signature;
         }
     }
 }

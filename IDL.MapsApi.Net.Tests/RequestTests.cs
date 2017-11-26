@@ -280,18 +280,19 @@ namespace IDL.MapsApi.Net.Tests
         public void CheckThatTheGoogleDirectionsHandlesTheGoogleCredentialsConstructorParameterCorrectly()
         {
             var key = Guid.NewGuid().ToString("N");
-            var clientId = Guid.NewGuid().ToString("N");
-            var signature = Guid.NewGuid().ToString("N");
+            var clientId = "FixedId";
+            var secretKey = "vNIXE0xscrmjlyV-12Nj_BvUPaw=";
+            var signture = "ZZg46DhQazg8Vb9hQNs42OVhuvs=";
 
-            var directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(key));
+            var directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(key)){RootPath = "http://test.com"};
             Assert.That(directionsRequest.Path, Is.StringContaining($"key={key}"));
             Assert.That(directionsRequest.Path, Is.Not.StringContaining("client="));
             Assert.That(directionsRequest.Path, Is.Not.StringContaining("signature="));
 
-            directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(clientId, signature));
+            directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(clientId, secretKey));
             Assert.That(directionsRequest.Path, Is.Not.StringContaining($"key={key}"));
             Assert.That(directionsRequest.Path, Is.StringContaining($"client={clientId}"));
-            Assert.That(directionsRequest.Path, Is.StringContaining($"signature={signature}"));
+            Assert.That(directionsRequest.Path, Is.StringContaining($"signature={signture}"));
 
             Assert.Throws<ArgumentException>(
                 () =>

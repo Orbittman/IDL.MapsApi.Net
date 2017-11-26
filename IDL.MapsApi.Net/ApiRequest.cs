@@ -7,7 +7,7 @@ namespace IDL.MapsApi.Net
     {
         protected NameValueCollection QueryParameters { get; set; } = new NameValueCollection();
 
-        public string Path
+        public virtual string Path
         {
             get
             {

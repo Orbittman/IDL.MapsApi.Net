@@ -7,16 +7,16 @@
             ApiKey = apiKey;
         }
 
-        public GoogleCredentials(string clientId, string signature)
+        public GoogleCredentials(string clientId, string privateKey)
         {
             ClientId = clientId;
-            Signature = signature;
+            PrivateKey = privateKey;
         }
 
         public string ApiKey { get; }
 
         public string ClientId { get; }
 
-        public string Signature { get; }
+        public string PrivateKey { get; }
     }
 }
