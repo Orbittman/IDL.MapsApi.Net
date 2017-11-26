@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using IDL.MapsApi.Net.Google.Models;
 using IDL.MapsApi.Net.Google.Response;
@@ -100,7 +102,7 @@ namespace IDL.MapsApi.Net
             return response;
         }
 
-        public static IEnumerable<Location> ToLocationPoints(this string polyLine)
+        public static IEnumerable<Location> Decode(this string polyLine)
         {
             var binary = 0;
             var shiftCounter = 0;
@@ -142,6 +144,45 @@ namespace IDL.MapsApi.Net
             }
 
             return locations;
+        }
+
+        public static string Encode(this IEnumerable<Location> locations)
+        {
+            var polylineBuilder = new StringBuilder();
+            void EncodeValue(int value)
+            {
+                var returnValue = value << 1;
+                if (returnValue < 0)
+                {
+                    returnValue = ~returnValue;
+                }
+
+                while (returnValue >= 0x20)
+                {
+                    polylineBuilder.Append((char)((0x20 | (returnValue & 0x1f)) + 63));
+                    returnValue >>= 5;
+                }
+
+                polylineBuilder.Append((char)(returnValue + 63));
+            }
+
+            var lastLatitude = 0;
+            var lastLongitude = 0;
+            const float multiplier = 1E5F;
+
+            foreach (var location in locations)
+            {
+                var latitudeValue = (int)Math.Round(location.Latitude * multiplier);
+                var longitudeValue = (int)Math.Round(location.Longitude * multiplier);
+
+                EncodeValue(latitudeValue - lastLatitude);
+                EncodeValue(longitudeValue - lastLongitude);
+
+                lastLatitude = latitudeValue;
+                lastLongitude = longitudeValue;
+            }
+
+            return polylineBuilder.ToString();
         }
 
         private static string GetGoogleAddressComponent(IEnumerable<AddressComponent> addressComponents, string componentName)

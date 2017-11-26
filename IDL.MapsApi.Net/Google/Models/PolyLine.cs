@@ -9,6 +9,6 @@ namespace IDL.MapsApi.Net.Google.Models
         [DataMember(Name = "points")]
         public string Points { get; set; }
 
-        public IEnumerable<Net.Models.Location> StepLocations => Points.ToLocationPoints();
+        public IEnumerable<Net.Models.Location> StepLocations => Points.Decode();
     }
 }
