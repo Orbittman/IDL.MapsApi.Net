@@ -105,34 +105,37 @@ namespace IDL.MapsApi.Net
             var binary = 0;
             var shiftCounter = 0;
             var locations = new List<Location>();
-            var state = true;
-            var currentLatitude = 0d;
-            var currentLongitude = 0d;
-            var index = 0;
+            var state = false;
+            var currentLatitude = 0f;
+            var currentLongitude = 0f;
             var charArray = polyLine.ToCharArray();
+            const float multiplier = 1E5F;
 
-            while (index < charArray.Length)
+            foreach (var charx in charArray)
             {
-                var character = charArray[index++] - 63;
+                var character = charx - 63;
                 if ((character & 32) == 32)
                 {
-                    binary |= (character & ~32) << shiftCounter++ * 5;
+                    binary |= (character & ~32) << shiftCounter;
+                    shiftCounter += 5;
                 }
                 else
                 {
-                    binary |= character << shiftCounter++ * 5;
-                    binary = ((binary & 1) == 1 ? ~binary : binary) >> 1;
-                    if (state)
+                    binary |= character << shiftCounter;
+                    if (state = !state)
                     {
-                        currentLatitude += binary;
+                        currentLatitude += (binary & 1) == 1 ? ~binary >> 1 : binary >> 1;
                     }
                     else
                     {
-                        currentLongitude += binary;
-                        locations.Add(new Location { Latitude = currentLatitude / 1E5, Longitude = currentLongitude / 1E5 });
+                        currentLongitude += (binary & 1) == 1 ? ~binary >> 1 : binary >> 1;
+                        locations.Add(new Location
+                        {
+                            Latitude = currentLatitude / multiplier,
+                            Longitude = currentLongitude / multiplier
+                        });
                     }
 
-                    state = !state;
                     binary = 0;
                     shiftCounter = 0;
                 }
