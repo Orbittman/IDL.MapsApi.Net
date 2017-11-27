@@ -108,10 +108,9 @@ namespace IDL.MapsApi.Net
             var shiftCounter = 0;
             var locations = new List<Location>();
             var state = false;
-            var currentLatitude = 0f;
-            var currentLongitude = 0f;
+            var currentLatitude = 0d;
+            var currentLongitude = 0d;
             var charArray = polyLine.ToCharArray();
-            const float multiplier = 1E5F;
 
             foreach (var charx in charArray)
             {
@@ -133,8 +132,8 @@ namespace IDL.MapsApi.Net
                         currentLongitude += (binary & 1) == 1 ? ~binary >> 1 : binary >> 1;
                         locations.Add(new Location
                         {
-                            Latitude = currentLatitude / multiplier,
-                            Longitude = currentLongitude / multiplier
+                            Latitude = currentLatitude / 1E5,
+                            Longitude = currentLongitude / 1E5
                         });
                     }
 
