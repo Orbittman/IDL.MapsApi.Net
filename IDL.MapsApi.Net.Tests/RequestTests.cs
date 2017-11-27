@@ -217,7 +217,7 @@ namespace IDL.MapsApi.Net.Tests
                 Destination = destination
             };
 
-            Assert.That(request.Path, Is.EqualTo($"directions/json?destination={destination}&origin={origin}&key={key}"));
+            Assert.That(request.Path, Is.EqualTo($"https://maps.googleapis.com/maps/api/directions/json?destination={destination}&origin={origin}&key={key}"));
         }
 
         [Test]
@@ -280,9 +280,9 @@ namespace IDL.MapsApi.Net.Tests
         public void CheckThatTheGoogleDirectionsHandlesTheGoogleCredentialsConstructorParameterCorrectly()
         {
             var key = Guid.NewGuid().ToString("N");
-            var clientId = "FixedId";
-            var secretKey = "vNIXE0xscrmjlyV-12Nj_BvUPaw=";
-            var signture = "ZZg46DhQazg8Vb9hQNs42OVhuvs=";
+            const string clientId = "FixedId";
+            const string secretKey = "vNIXE0xscrmjlyV-12Nj_BvUPaw=";
+            const string signture = "CRxVumPbEloBzaOnLNuYNWMbzNA=";
 
             var directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(key)){RootPath = "http://test.com"};
             Assert.That(directionsRequest.Path, Is.StringContaining($"key={key}"));

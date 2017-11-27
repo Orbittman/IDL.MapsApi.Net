@@ -19,20 +19,12 @@ namespace IDL.MapsApi.Net.Client
 
         public virtual async Task<TResponse> GetAsync<TResponse>(IRequest<TResponse> request) where TResponse : class, new()
         {
-            var root = _endPoint ?? request.RootPath;
-            if (string.IsNullOrEmpty(root))
-            {
-                throw new NullReferenceException($"No root parameter was supplied for request {request.GetType().Name}");
-            }
-
-            var path = root + (root.EndsWith("/") ? string.Empty : "/") + request.Path;
-
             TResponse response = null;
             using (var handler = ResponseHandler ?? new HttpClientHandler())
             {
                 using (var client = new HttpClient(handler))
                 {
-                    var requestMessage = new HttpRequestMessage(HttpMethod.Get, path);
+                    var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.Path);
                     requestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     using (var httpResponseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false))

@@ -7,8 +7,6 @@ namespace IDL.MapsApi.Net.Google.Request
 {
     public class GoogleDirectionsRequest : GoogleApiRequest, IRequest<GoogleDirectionsResponse>
     {
-        private string _rootPath;
-
         public GoogleDirectionsRequest(string apiKey = null)
             : base(apiKey)
         {
@@ -24,12 +22,6 @@ namespace IDL.MapsApi.Net.Google.Request
         public string Origin { get; set; }
 
         public string Destination { get; set; }
-
-        public string RootPath
-        {
-            get => _rootPath ?? ConfigurationManager.AppSettings.Get("GoogleMapsGeoApiEndPoint");
-            set => _rootPath = value;
-        }
 
         protected override void BuildQueryParameters()
         {

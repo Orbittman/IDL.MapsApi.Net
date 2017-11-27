@@ -9,6 +9,7 @@ namespace IDL.MapsApi.Net
 {
     public abstract class GoogleApiRequest : ApiRequest
     {
+        private string _rootPath;
         private readonly GoogleCredentials _credentials;
 
         protected GoogleApiRequest(string apiKey = null)
@@ -40,6 +41,12 @@ namespace IDL.MapsApi.Net
             }
         }
 
+        public override string RootPath
+        {
+            get => _rootPath ?? ConfigurationManager.AppSettings.Get("GoogleMapsGeoApiEndPoint").TrimEnd('/');
+            set => _rootPath = value;
+        }
+
         public override string Path
         {
             get
@@ -54,13 +61,13 @@ namespace IDL.MapsApi.Net
         {
             var usablePrivateKey = key.Replace("-", "+").Replace("_", "/");
             var privateKeyBytes = Convert.FromBase64String(usablePrivateKey);
-            var uri = new Uri(url, UriKind.Relative);
-            var encodedPathAndQueryBytes = new ASCIIEncoding().GetBytes(uri.OriginalString);
+            var uri = new Uri(url, UriKind.Absolute);
+            var encodedPathAndQueryBytes = new ASCIIEncoding().GetBytes(uri.LocalPath + uri.Query);
             var algorithm = new HMACSHA1(privateKeyBytes);
             var hash = algorithm.ComputeHash(encodedPathAndQueryBytes);
             var signature = Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_");
-            
-            return uri.OriginalString + "&signature=" + signature;
+
+            return uri.Scheme + "://" + uri.Host + uri.LocalPath + uri.Query + "&signature=" + signature;
         }
     }
 }

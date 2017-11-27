@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 
 namespace IDL.MapsApi.Net
@@ -11,13 +12,21 @@ namespace IDL.MapsApi.Net
         {
             get
             {
+                if (string.IsNullOrEmpty(RootPath))
+                {
+                    throw new NullReferenceException($"No root parameter was supplied for the request");
+                }
+                
                 BuildQueryParameters();
                 var parameters = QueryParameters.AllKeys.Select(q => q + "=" + QueryParameters[q]);
-                return RequestSpecificPath + "?" + string.Join("&", parameters);
+                var relativePath = RequestSpecificPath + "?" + string.Join("&", parameters);
+                return RootPath + (RootPath.EndsWith("/") || relativePath.StartsWith("/") ? string.Empty : "/") + relativePath;
             }
         }
 
         protected virtual string RequestSpecificPath => string.Empty;
+
+        public abstract string RootPath { get; set; }
 
         protected virtual void BuildQueryParameters()
         {
