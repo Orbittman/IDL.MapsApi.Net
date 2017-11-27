@@ -17,7 +17,7 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
-        protected override string RequestSpecificPath => "directions/json";
+        protected override string RequestSpecificPath => "/directions/json";
 
         public string Origin { get; set; }
 

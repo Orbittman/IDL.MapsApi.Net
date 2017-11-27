@@ -6,6 +6,6 @@ namespace IDL.MapsApi.Net.MapBox.Request
     {
         public DistanceProfile Profile { get; set; }
 
-        protected override string RequestSpecificPath => $"distances/v1/mapbox/{Profile}";
+        protected override string RequestSpecificPath => $"/distances/v1/mapbox/{Profile}";
     }
 }

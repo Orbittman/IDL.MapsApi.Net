@@ -18,7 +18,7 @@ namespace IDL.MapsApi.Net.MapBox.Request
 
         public Types[] Types { get; set; }
 
-        protected override string RequestSpecificPath => $"geocoding/v5/{DataSet}/{Longitude},{Latitude}.json";
+        protected override string RequestSpecificPath => $"/geocoding/v5/{DataSet}/{Longitude},{Latitude}.json";
 
         protected override void BuildQueryParameters()
         {
