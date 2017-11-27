@@ -6,7 +6,7 @@ if "%config%" == "" (
 
 set version=
 if not "%PackageVersion%" == "" (
-   set version=-Version %GitVersion.ClassicVersionWithTag%
+   set version=%GitVersion.NuGetVersionV2%
 )
 REM Package restore
 call %NuGet% restore IDL.MapsApi.Net.Tests\packages.config -OutputDirectory %cd%\packages -NonInteractive
@@ -22,7 +22,7 @@ if not "%errorlevel%"=="0" goto failure
 
 REM Package
 mkdir Build
-call %nuget% pack "IDL.MapsApi.Net\IDL.MapsApi.Net.nuspec" -symbols -o Build -p Configuration=%config% %version%
+call %nuget% pack "IDL.MapsApi.Net\IDL.MapsApi.Net.nuspec" -symbols -o Build -p Configuration=%config% -Version %version% 
 if not "%errorlevel%"=="0" goto failure
 
 :success
