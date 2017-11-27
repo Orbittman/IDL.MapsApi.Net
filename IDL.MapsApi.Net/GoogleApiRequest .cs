@@ -44,15 +44,15 @@ namespace IDL.MapsApi.Net
         {
             get
             {
-                var secretKey = _credentials?.SecretKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsSecretKey");
+                var secretKey = _credentials?.PrivateKey ?? ConfigurationManager.AppSettings.Get("GoogleMapsPrivateKey");
                 var path = string.IsNullOrEmpty(secretKey) ? base.Path : SignPath(base.Path, secretKey);
                 return path;
             }
         }
 
-        public static string SignPath(string url, string keyString)
+        public static string SignPath(string url, string key)
         {
-            var usablePrivateKey = keyString.Replace("-", "+").Replace("_", "/");
+            var usablePrivateKey = key.Replace("-", "+").Replace("_", "/");
             var privateKeyBytes = Convert.FromBase64String(usablePrivateKey);
             var uri = new Uri(url, UriKind.Relative);
             var encodedPathAndQueryBytes = new ASCIIEncoding().GetBytes(uri.OriginalString);

@@ -10,7 +10,7 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
-        public GoogleReverseGeocodingRequest(GoogleCredentials credentials = null)
+        public GoogleReverseGeocodingRequest(GoogleCredentials credentials)
             : base(credentials)
         {
         }

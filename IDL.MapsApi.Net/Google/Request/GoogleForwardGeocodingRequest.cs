@@ -10,16 +10,16 @@ namespace IDL.MapsApi.Net.Google.Request
         {
         }
 
-        public GoogleForwardGeocodingRequest(GoogleCredentials credentials = null)
+        public GoogleForwardGeocodingRequest(GoogleCredentials credentials)
             : base(credentials)
         {
         }
 
-        public string Address { get; set; }
+        public string Query { get; set; }
 
         protected override void BuildQueryParameters()
         {
-            AddQueryParameter("address", Address);
+            AddQueryParameter("address", Query);
             base.BuildQueryParameters();
         }
     }

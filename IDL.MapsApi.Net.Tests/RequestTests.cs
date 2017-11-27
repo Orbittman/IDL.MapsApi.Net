@@ -125,7 +125,7 @@ namespace IDL.MapsApi.Net.Tests
             var key = Guid.NewGuid().ToString();
             var request = new GoogleForwardGeocodingRequest(key)
             {
-                Address = "BS5 6DR"
+                Query = "BS5 6DR"
             };
 
             var apiResponse = await GetResponse(new ApiClient(), request, GetForwardGeocodingGoogleResult());
@@ -196,7 +196,7 @@ namespace IDL.MapsApi.Net.Tests
             var key = Guid.NewGuid().ToString();
             var request = new GoogleForwardGeocodingRequest(key)
             {
-                Address = "BS5 6DR",
+                Query = "BS5 6DR",
                 RootPath = string.Empty
             };
 
