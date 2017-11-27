@@ -1,35 +1,28 @@
-﻿using IDL.MapsApi.Net.Google.Response;
+﻿using IDL.MapsApi.Net.Google.Models;
+using IDL.MapsApi.Net.Google.Response;
 
 namespace IDL.MapsApi.Net.Google.Request
 {
     public class GoogleReverseGeocodingRequest : GoogleGeoLocationRequest, IRequest<GoogleGeocodingResponse>
     {
-        private double _latitude;
-        private double _longitude;
-
         public GoogleReverseGeocodingRequest(string apiKey = null)
             : base(apiKey)
         {
         }
 
-        public double Latitude
+        public GoogleReverseGeocodingRequest(GoogleCredentials credentials)
+            : base(credentials)
         {
-            get { return _latitude; }
-            set
-            {
-                _latitude = value;
-                QueryParameters["latlng"] = $"{value},{_longitude}";
-            }
         }
 
-        public double Longitude
+        public double Latitude { get; set; }
+
+        public double Longitude { get; set; }
+
+        protected override void BuildQueryParameters()
         {
-            get { return _longitude; }
-            set
-            {
-                _longitude = value;
-                QueryParameters["latlng"] = $"{_latitude},{value}";
-            }
+            AddQueryParameter("latlng", $"{Latitude},{Longitude}");
+            base.BuildQueryParameters();
         }
     }
 }

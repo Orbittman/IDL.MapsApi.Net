@@ -1,12 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 using IDL.MapsApi.Net.Client;
+using IDL.MapsApi.Net.Google.Models;
 using IDL.MapsApi.Net.Google.Request;
 using IDL.MapsApi.Net.Google.Response;
 using IDL.MapsApi.Net.MapBox.Request;
@@ -81,9 +80,9 @@ namespace IDL.MapsApi.Net.Tests
             Assert.That(apiResponse.Routes.Length, Is.EqualTo(1));
 
             Assert.That(apiResponse.Routes[0].PolyLine.Points, Is.Not.Empty);
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.Length, Is.EqualTo(1));
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations[0].Latitude, Is.EqualTo(40.74288));
-            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations[0].Longitude, Is.EqualTo(-74.00585));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.Count(), Is.EqualTo(1));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.ElementAt(0).Latitude, Is.EqualTo(40.74288));
+            Assert.That(apiResponse.Routes[0].PolyLine.StepLocations.ElementAt(0).Longitude, Is.EqualTo(-74.00585));
 
             Assert.That(apiResponse.Routes[0].Bounds.NorthEast.Latitude, Is.EqualTo(40.8171321));
             Assert.That(apiResponse.Routes[0].Bounds.NorthEast.Longitude, Is.EqualTo(-73.99449150000001));
@@ -209,13 +208,16 @@ namespace IDL.MapsApi.Net.Tests
         [Test]
         public void CheckThatTheDirectionApiRequestHasAcorrectlyFormattedUrl()
         {
-            var request = new GoogleDirectionsRequest
+            var key = Guid.NewGuid().ToString("N");
+            var origin = Guid.NewGuid().ToString("N");
+            var destination = Guid.NewGuid().ToString("N");
+            var request = new GoogleDirectionsRequest(key)
             {
-                Origin = "Bristol,uk",
-                Destination = "Bath,uk"
+                Origin = origin,
+                Destination = destination
             };
 
-            Assert.That(request.Path, Is.EqualTo("directions/json?key=&origin=Bristol,uk&destination=Bath,uk"));
+            Assert.That(request.Path, Is.EqualTo($"https://maps.googleapis.com/maps/api/directions/json?destination={destination}&origin={origin}&key={key}"));
         }
 
         [Test]
@@ -273,23 +275,30 @@ namespace IDL.MapsApi.Net.Tests
             var apiResponse = await provider.GetAsync(request);
             Assert.That(apiResponse, Is.SameAs(response));
         }
-    }
 
-    internal class MockResponseHandler : HttpMessageHandler
-    {
-        private readonly Stream _responseStream;
-
-        public MockResponseHandler(Stream responseStream)
+        [Test]
+        public void CheckThatTheGoogleDirectionsHandlesTheGoogleCredentialsConstructorParameterCorrectly()
         {
-            _responseStream = responseStream;
-        }
+            var key = Guid.NewGuid().ToString("N");
+            const string clientId = "FixedId";
+            const string secretKey = "vNIXE0xscrmjlyV-12Nj_BvUPaw=";
+            const string signture = "CRxVumPbEloBzaOnLNuYNWMbzNA=";
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            return Task.FromResult(
-                new HttpResponseMessage
+            var directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(key)){RootPath = "http://test.com"};
+            Assert.That(directionsRequest.Path, Is.StringContaining($"key={key}"));
+            Assert.That(directionsRequest.Path, Is.Not.StringContaining("client="));
+            Assert.That(directionsRequest.Path, Is.Not.StringContaining("signature="));
+
+            directionsRequest = new GoogleDirectionsRequest(new GoogleCredentials(clientId, secretKey));
+            Assert.That(directionsRequest.Path, Is.Not.StringContaining($"key={key}"));
+            Assert.That(directionsRequest.Path, Is.StringContaining($"client={clientId}"));
+            Assert.That(directionsRequest.Path, Is.StringContaining($"signature={signture}"));
+
+            Assert.Throws<ArgumentException>(
+                () =>
                 {
-                    Content = new StreamContent(_responseStream)
+                    var request = new GoogleDirectionsRequest((GoogleCredentials)null);
+                    var path = request.Path;
                 });
         }
     }

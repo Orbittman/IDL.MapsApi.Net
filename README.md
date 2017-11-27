@@ -5,12 +5,19 @@ This is a .Net library for accessing the Google Maps and MapBox geolocation APIs
 The library is based on simple requests to the MapsApi client for the service that you requre:
 
 ````c#
-IApiClient client = new new ApiClient();
-var request = new GoogleForwardGeocodingRequest(key)
+IApiClient googleClient = new new ApiClient();
+var request = new GoogleForwardGeocodingRequest(new GoogleCredentials(key))
     {
         Query = "BS13RW"
     };
-var response = client.GetAsync(request);
+var googleResponse = googleClient.GetAsync(request);
+
+IApiClient mapBoxClient = new new ApiClient();
+var request = new MapBoxForwardGeocodingRequest(key)
+    {
+        Query = "BS13RW"
+    };
+var mapBoxResponse = mapBoxClient.GetAsync(request);
 ````
 
 Each request has a sepcific response that represents the data that the provider supplies, Google Maps and MapBox both return different data for the same type of request. MapsApi contains extension methods that convert these into a common format with a basic generic fields for what is required.
@@ -36,9 +43,9 @@ By default the path and API keys are picked up from the AppSettings configuratio
 - GoogleMapsApiKey
 - GoogleMapsGeoApiEndPoint
 
-This can be overridden by passing the root path to the ApiClient constructor or setting the RootPath of a request and passing in the api key to the request constructor. This is because from expreience the path formats can be different when using different requests to the same provider.
+This can be overridden by passing the root path to the ApiClient constructor or setting the RootPath of a request and passing in the api key or in the case of the Google requests a GoogleCredentials class to the request constructor. This is because from expreience the path formats can be different when using different requests to the same provider.
 
-If you would rather use a different client that the built in one you can create a wrapper for libraries such as RestSharp.
+If you would rather use a different client than the built in one you can create a wrapper for libraries such as RestSharp.
 ````c#
 public class RestSharpClientWrapper : ApiClient
   {

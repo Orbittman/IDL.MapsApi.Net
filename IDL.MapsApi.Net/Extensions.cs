@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using IDL.MapsApi.Net.Google.Models;
 using IDL.MapsApi.Net.Google.Response;
@@ -101,34 +102,40 @@ namespace IDL.MapsApi.Net
             return response;
         }
 
-        public static Location[] ToLocationPoints(this string polyLine)
+        public static IEnumerable<Location> Decode(this string polyLine)
         {
             var binary = 0;
             var shiftCounter = 0;
             var locations = new List<Location>();
-            var iteration = 0;
-            var currentLatitude = 0d;
-            var currentLongitude = 0d;
+            var state = false;
+            var currentLatitude = 0f;
+            var currentLongitude = 0f;
+            var charArray = polyLine.ToCharArray();
+            const float multiplier = 1E5F;
 
-            foreach (var characterValue in polyLine.Select(t => t - 63))
+            foreach (var charx in charArray)
             {
-                var shift = shiftCounter++ * 5;
-                if ((characterValue & 0x20) == 0x20)
+                var character = charx - 63;
+                if ((character & 32) == 32)
                 {
-                    binary |= (characterValue & ~0x20) << shift;
+                    binary |= (character & ~32) << shiftCounter;
+                    shiftCounter += 5;
                 }
                 else
                 {
-                    binary |= characterValue << shift;
-                    var value = Convert.ToDouble(((binary & 1) == 1 ? ~binary : binary) >> 1) / 1E5;
-                    if (iteration++ % 2 == 0)
+                    binary |= character << shiftCounter;
+                    if (state = !state)
                     {
-                        currentLatitude += value;
+                        currentLatitude += (binary & 1) == 1 ? ~binary >> 1 : binary >> 1;
                     }
                     else
                     {
-                        currentLongitude += value;
-                        locations.Add(new Location { Latitude = currentLatitude, Longitude = currentLongitude });
+                        currentLongitude += (binary & 1) == 1 ? ~binary >> 1 : binary >> 1;
+                        locations.Add(new Location
+                        {
+                            Latitude = currentLatitude / multiplier,
+                            Longitude = currentLongitude / multiplier
+                        });
                     }
 
                     binary = 0;
@@ -136,7 +143,46 @@ namespace IDL.MapsApi.Net
                 }
             }
 
-            return locations.ToArray();
+            return locations;
+        }
+
+        public static string Encode(this IEnumerable<Location> locations)
+        {
+            var polylineBuilder = new StringBuilder();
+            void EncodeValue(int value)
+            {
+                var returnValue = value << 1;
+                if (returnValue < 0)
+                {
+                    returnValue = ~returnValue;
+                }
+
+                while (returnValue >= 0x20)
+                {
+                    polylineBuilder.Append((char)((0x20 | (returnValue & 0x1f)) + 63));
+                    returnValue >>= 5;
+                }
+
+                polylineBuilder.Append((char)(returnValue + 63));
+            }
+
+            var lastLatitude = 0;
+            var lastLongitude = 0;
+            const float multiplier = 1E5F;
+
+            foreach (var location in locations)
+            {
+                var latitudeValue = (int)Math.Round(location.Latitude * multiplier);
+                var longitudeValue = (int)Math.Round(location.Longitude * multiplier);
+
+                EncodeValue(latitudeValue - lastLatitude);
+                EncodeValue(longitudeValue - lastLongitude);
+
+                lastLatitude = latitudeValue;
+                lastLongitude = longitudeValue;
+            }
+
+            return polylineBuilder.ToString();
         }
 
         private static string GetGoogleAddressComponent(IEnumerable<AddressComponent> addressComponents, string componentName)

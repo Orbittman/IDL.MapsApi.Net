@@ -14,19 +14,16 @@ namespace IDL.MapsApi.Net.MapBox.Request
 
         public double Longitude { get; set; }
 
-        public Point Proximity
-        {
-            get { return Point.Parse(QueryParameters["proximity"]); }
-            set { QueryParameters["proximity"] = value.ToString(); }
-        }
+        public Point Proximity { get; set; }
 
         public Types[] Types { get; set; }
 
-        protected override string RequestSpecificPath => $"geocoding/v5/{DataSet}/{$"{Longitude},{Latitude}"}.json";
+        protected override string RequestSpecificPath => $"/geocoding/v5/{DataSet}/{Longitude},{Latitude}.json";
 
-        protected override void ConfigureParameters()
+        protected override void BuildQueryParameters()
         {
-            QueryParameters["types"] = string.Join(",", Types).ToLower();
+            AddQueryParameter("types", string.Join(",", Types ?? new Types[0]).ToLower());
+            AddQueryParameter("proximity", Proximity?.ToString());
         }
     }
 }
