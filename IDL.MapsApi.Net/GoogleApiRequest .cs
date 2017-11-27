@@ -57,7 +57,7 @@ namespace IDL.MapsApi.Net
             }
         }
 
-        public static string SignPath(string url, string key)
+        private static string SignPath(string url, string key)
         {
             var usablePrivateKey = key.Replace("-", "+").Replace("_", "/");
             var privateKeyBytes = Convert.FromBase64String(usablePrivateKey);
