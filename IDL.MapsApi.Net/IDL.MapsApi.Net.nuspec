@@ -4,7 +4,7 @@
         <id>IDL.MapsApi.Net</id>
         <version>0.3.0</version>
         <authors>Tim Barton</authors>
-        <licenseUrl>http://www.gnu.org/licenses/gpl-2.0.txt</licenseUrl>
+        <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
         <projectUrl>http://techblog.invitationdigital.com/IDL.MapsApi.Net/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>.Net library for integrating with Google Maps and MapBox forward and reverse geolocation APIs and Google directions API.</description>
