@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
         <id>IDL.MapsApi.Net</id>
-        <version>0.3.0</version>
-        <authors>Tim Barton</authors>
+        <version>1.0.2</version>
+        <authors>Invitation Digital</authors>
         <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
         <projectUrl>http://techblog.invitationdigital.com/IDL.MapsApi.Net/</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
